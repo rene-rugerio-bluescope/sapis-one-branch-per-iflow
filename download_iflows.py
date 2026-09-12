@@ -33,7 +33,10 @@ def get_config():
     if missing:
         print(f"Missing required environment variables: {', '.join(missing)}", file=sys.stderr)
         sys.exit(1)
-    return {v: os.environ[v] for v in REQUIRED_VARS}
+    cfg = {v: os.environ[v] for v in REQUIRED_VARS}
+    # Normalize: strip any trailing slash so we never produce a double slash when appending paths
+    cfg["SAP_API_BASE_URL"] = cfg["SAP_API_BASE_URL"].rstrip("/")
+    return cfg
 
 
 def get_token(cfg):
