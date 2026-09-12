@@ -23,8 +23,8 @@ jobs:
           SAP_CLIENT_ID: ${{ secrets.SAP_CLIENT_ID }}
           SAP_CLIENT_SECRET: ${{ secrets.SAP_CLIENT_SECRET }}
           SAP_TOKEN_URL: ${{ secrets.SAP_TOKEN_URL }}
-          SAP_API_BASE_URL: ${{ secrets.SAP_API_BASE_URL }}
-          PACKAGE_ID: ${{ secrets.PACKAGE_ID }}
+          SAP_API_BASE_URL: ${{ vars.SAP_API_BASE_URL }}
+          PACKAGE_ID: ${{ vars.PACKAGE_ID }}
         run: python3 download_iflows.py
 
       - name: Commit changes
