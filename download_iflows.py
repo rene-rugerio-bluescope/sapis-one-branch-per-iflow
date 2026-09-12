@@ -80,6 +80,7 @@ def main():
     print(f"Fetching token...")
     token = get_token(cfg)
 
+    print(f"PACKAGE_ID repr: {package_id!r} (length: {len(package_id)})")
     print(f"Listing iFlows in package '{package_id}'...")
     iflows = list_iflows(cfg, token, package_id)
 
