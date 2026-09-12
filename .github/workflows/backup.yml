@@ -1,0 +1,36 @@
+name: SAP iFlow Backup
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # nightly at 2am UTC
+  workflow_dispatch: {}    # allows manual "Run workflow" trigger
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run backup script
+        env:
+          SAP_CLIENT_ID: ${{ secrets.SAP_CLIENT_ID }}
+          SAP_CLIENT_SECRET: ${{ secrets.SAP_CLIENT_SECRET }}
+          SAP_TOKEN_URL: ${{ secrets.SAP_TOKEN_URL }}
+          SAP_API_BASE_URL: ${{ secrets.SAP_API_BASE_URL }}
+          PACKAGE_ID: ${{ secrets.PACKAGE_ID }}
+        run: python3 download_iflows.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "sap-backup-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add iflows/
+          git diff --cached --quiet || git commit -m "Backup: $(date -u +%F)"
+          git push
