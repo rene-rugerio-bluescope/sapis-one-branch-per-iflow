@@ -47,6 +47,12 @@ def get_token(cfg):
     return resp.json()["access_token"]
 
 
+DEFAULT_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; sap-backup-script/1.0)",
+    "Accept": "application/json",
+}
+
+
 def list_iflows(cfg, token, package_id):
     """List Integration Flows inside the given package via the package's navigation property."""
     url = (
@@ -54,8 +60,9 @@ def list_iflows(cfg, token, package_id):
         f"/IntegrationDesigntimeArtifacts?$format=json"
     )
     print(f"Requesting: {url}")
-    headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
+    headers = {**DEFAULT_HEADERS, "Authorization": f"Bearer {token}"}
     resp = requests.get(url, headers=headers, timeout=30)
+    print(f"Response status: {resp.status_code}")
     resp.raise_for_status()
     data = resp.json()
     # OData v2 wraps results under d.results
@@ -68,7 +75,7 @@ def download_iflow(cfg, token, iflow_id, version="active"):
         f"{cfg['SAP_API_BASE_URL']}/IntegrationDesigntimeArtifacts"
         f"(Id='{iflow_id}',Version='{version}')/$value"
     )
-    headers = {"Authorization": f"Bearer {token}"}
+    headers = {**DEFAULT_HEADERS, "Authorization": f"Bearer {token}"}
     resp = requests.get(url, headers=headers, timeout=60)
     resp.raise_for_status()
     return resp.content
