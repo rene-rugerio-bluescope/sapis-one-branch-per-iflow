@@ -48,10 +48,10 @@ def get_token(cfg):
 
 
 def list_iflows(cfg, token, package_id):
-    """List Integration Flows (artifact type IFlow) inside the given package."""
+    """List Integration Flows inside the given package via the package's navigation property."""
     url = (
-        f"{cfg['SAP_API_BASE_URL']}/IntegrationDesigntimeArtifacts"
-        f"?$filter=PackageId eq '{package_id}'&$format=json"
+        f"{cfg['SAP_API_BASE_URL']}/IntegrationPackages('{package_id}')"
+        f"/IntegrationDesigntimeArtifacts?$format=json"
     )
     headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
     resp = requests.get(url, headers=headers, timeout=30)
