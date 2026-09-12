@@ -3,11 +3,11 @@
 Download all Integration Flows from a single SAP Integration Suite package.
 
 Required environment variables:
-  SAP_CLIENT_ID       - OAuth client ID from the service key
-  SAP_CLIENT_SECRET   - OAuth client secret from the service key
-  SAP_TOKEN_URL       - OAuth token endpoint, e.g. https://<sub>.authentication.<region>.hana.ondemand.com/oauth/token
-  SAP_API_BASE_URL    - API host, e.g. https://<tenant>.<region>.hci.sap.hana.ondemand.com/api/v1
-  PACKAGE_ID          - the technical ID of the package to back up
+  SAP_CLIENT_ID       - OAuth client ID from the service key (secret)
+  SAP_CLIENT_SECRET   - OAuth client secret from the service key (secret)
+  SAP_TOKEN_URL        - OAuth token endpoint, e.g. https://<sub>.authentication.<region>.hana.ondemand.com/oauth/token (secret)
+  SAP_API_BASE_URL    - API host, e.g. https://<tenant>.<region>.hci.sap.hana.ondemand.com/api/v1 (variable)
+  PACKAGE_ID          - the technical ID of the package to back up (variable)
 
 Output:
   ./iflows/<IFlowId>/  -- unzipped contents of each iFlow, one folder per iFlow
@@ -53,6 +53,7 @@ def list_iflows(cfg, token, package_id):
         f"{cfg['SAP_API_BASE_URL']}/IntegrationPackages('{package_id}')"
         f"/IntegrationDesigntimeArtifacts?$format=json"
     )
+    print(f"Requesting: {url}")
     headers = {"Authorization": f"Bearer {token}", "Accept": "application/json"}
     resp = requests.get(url, headers=headers, timeout=30)
     resp.raise_for_status()
@@ -77,7 +78,7 @@ def main():
     cfg = get_config()
     package_id = cfg["PACKAGE_ID"]
 
-    print(f"Fetching token...")
+    print("Fetching token...")
     token = get_token(cfg)
 
     print(f"PACKAGE_ID repr: {package_id!r} (length: {len(package_id)})")
@@ -110,7 +111,6 @@ def main():
                 zf.extractall(target_dir)
             print(f"  Extracted to {target_dir}")
         except zipfile.BadZipFile:
-            # Fall back to saving the raw file if it wasn't a zip for some reason
             raw_path = os.path.join(target_dir, f"{iflow_id}.raw")
             with open(raw_path, "wb") as f:
                 f.write(content)
