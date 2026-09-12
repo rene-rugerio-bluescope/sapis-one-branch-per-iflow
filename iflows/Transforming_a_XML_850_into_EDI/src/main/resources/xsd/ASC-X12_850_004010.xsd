@@ -1,0 +1,1657 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SAP Integration Suite compatible XSD for ASC X12 850 Purchase Order, Version 004010
+  Namespace : urn:sap.com:typesystem:b2b:116:asc-x12:004010
+  Root node : Interchange  (contains ISA/GS envelope + M_850 transaction)
+
+  Usage in SAP Cloud Integration:
+    - File must be named exactly: ASC-X12_850_004010.xsd
+    - Upload as a resource in your Integration Flow
+    - Reference in the XML to EDI Converter step as: /xsd/ASC-X12_850_004010.xsd
+    - In the EDI to XML Converter, set Schema: ASC-X12 | Version: 004010 | Message: 850
+
+  Envelope + Transaction Structure:
+    Interchange
+      S_ISA   Interchange Control Header
+      FunctionalGroup
+        S_GS    Functional Group Header
+        M_850   Purchase Order Transaction Set
+          S_ST    Transaction Set Header
+          S_BEG   Beginning Segment for Purchase Order
+          S_NTE   Note/Special Instruction             (optional, x100)
+          S_CUR   Currency                             (optional)
+          S_REF   Reference Identification             (optional, x12)
+          S_PER   Administrative Communications       (optional, x3)
+          S_TAX   Tax Reference                       (optional, x10)
+          S_FOB   F.O.B. Related Instructions          (optional)
+          S_CTP   Pricing Information                  (optional)
+          S_PAM   Period Amount                        (optional, x10)
+          S_CSH   Sales Requirements                  (optional)
+          S_TC2   Tax Certificate                     (optional, x5)
+          S_ITD   Terms of Sale/Deferred Terms         (optional, x5)
+          S_DIS   Discount Detail                     (optional, x20)
+          S_INC   Installment Information              (optional)
+          S_DTM   Date/Time Reference                 (optional, x10)
+          S_LDT   Lead Time                           (optional, x12)
+          S_LIN   Item Identification                 (optional, x5)
+          S_SI    Service Characteristic Identifier   (optional, x10)
+          S_PID   Product/Item Description            (optional, x200)
+          S_MEA   Measurements                        (optional, x40)
+          S_PWK   Paperwork                           (optional, x25)
+          S_PKG   Marking, Packaging, Loading          (optional, x25)
+          S_TD1   Carrier Details (Quantity/Weight)   (optional)
+          S_TD5   Carrier Details (Routing Sequence)  (optional, x12)
+          S_TD3   Carrier Details (Equipment)         (optional, x12)
+          S_TD4   Carrier Details (Special Handling)  (optional, x5)
+          S_MAN   Marks and Numbers                   (optional, x10)
+          S_PCT   Percent Amounts                     (optional, x10)
+          S_BAL   Balance Detail                      (optional, x20)
+          S_YNQ   Yes/No Question                     (optional, x10)
+          S_GF    Furnished Goods and Services        (optional)
+          S_AMT   Monetary Amount                     (optional, x10)
+          L_N9    Extended Reference Loop             (optional, x1000)
+          L_N1    Name Loop                           (optional, x200)
+          L_PO1   Baseline Item Data Loop             (optional, x100000)
+          S_CTT   Transaction Totals
+          S_AMT   Monetary Amount (summary)           (optional, x5)
+          S_SE    Transaction Set Trailer
+        S_GE    Functional Group Trailer
+      S_IEA   Interchange Control Trailer
+-->
+<xsd:schema
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:hci="http://sap.com/xi/XI/EDI"
+  targetNamespace="urn:sap.com:typesystem:b2b:116:asc-x12:004010"
+  xmlns="urn:sap.com:typesystem:b2b:116:asc-x12:004010"
+  elementFormDefault="qualified">
+
+  <xsd:annotation>
+    <xsd:appinfo>
+      <hci:resourceinfo>
+        <hci:info key="TypeSystem" value="ASC-X12"/>
+        <hci:info key="Version" value="004010"/>
+        <hci:info key="MessageType" value="850"/>
+      </hci:resourceinfo>
+    </xsd:appinfo>
+    <xsd:documentation>ASC X12 004010 850 Purchase Order - SAP Integration Suite Format</xsd:documentation>
+  </xsd:annotation>
+
+  <!-- ============================================================ -->
+  <!--  ROOT ELEMENT                                                 -->
+  <!-- ============================================================ -->
+  <xsd:element name="Interchange" type="Interchange"/>
+
+  <xsd:complexType name="Interchange">
+    <xsd:sequence>
+      <xsd:element name="S_ISA" type="S_ISA"/>
+      <xsd:element name="FunctionalGroup" type="FunctionalGroup" maxOccurs="unbounded"/>
+      <xsd:element name="S_IEA" type="S_IEA"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  ISA - Interchange Control Header                             -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_ISA">
+    <xsd:sequence>
+      <xsd:element name="D_I01">
+        <xsd:annotation><xsd:documentation>ISA01 | Authorization Information Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I02">
+        <xsd:annotation><xsd:documentation>ISA02 | Authorization Information (10 chars, space-padded)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="10"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I03">
+        <xsd:annotation><xsd:documentation>ISA03 | Security Information Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I04">
+        <xsd:annotation><xsd:documentation>ISA04 | Security Information (10 chars, space-padded)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="10"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I05_1">
+        <xsd:annotation><xsd:documentation>ISA05 | Interchange ID Qualifier (Sender)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I06">
+        <xsd:annotation><xsd:documentation>ISA06 | Interchange Sender ID (15 chars, space-padded)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="15"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I05_2">
+        <xsd:annotation><xsd:documentation>ISA07 | Interchange ID Qualifier (Receiver)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I07">
+        <xsd:annotation><xsd:documentation>ISA08 | Interchange Receiver ID (15 chars, space-padded)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="15"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I08">
+        <xsd:annotation><xsd:documentation>ISA09 | Interchange Date (YYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="6"/><xsd:maxLength value="6"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I09">
+        <xsd:annotation><xsd:documentation>ISA10 | Interchange Time (HHMM)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="4"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I10">
+        <xsd:annotation><xsd:documentation>ISA11 | Interchange Control Standards Identifier (U)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I11">
+        <xsd:annotation><xsd:documentation>ISA12 | Interchange Control Version Number (00401)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="5"/><xsd:maxLength value="5"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I12">
+        <xsd:annotation><xsd:documentation>ISA13 | Interchange Control Number (9 digits)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="9"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I13">
+        <xsd:annotation><xsd:documentation>ISA14 | Acknowledgment Requested (0=No, 1=Yes)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I14">
+        <xsd:annotation><xsd:documentation>ISA15 | Test Indicator (P=Production, T=Test)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I15">
+        <xsd:annotation><xsd:documentation>ISA16 | Component Element Separator</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  IEA - Interchange Control Trailer                            -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_IEA">
+    <xsd:sequence>
+      <xsd:element name="D_I16">
+        <xsd:annotation><xsd:documentation>IEA01 | Number of Included Functional Groups</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="5"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_I12">
+        <xsd:annotation><xsd:documentation>IEA02 | Interchange Control Number (must match ISA13)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="9"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  Functional Group                                             -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="FunctionalGroup">
+    <xsd:sequence>
+      <xsd:element name="S_GS" type="S_GS"/>
+      <xsd:element name="M_850" type="M_850" maxOccurs="unbounded"/>
+      <xsd:element name="S_GE" type="S_GE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  GS - Functional Group Header                                 -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_GS">
+    <xsd:sequence>
+      <xsd:element name="D_479">
+        <xsd:annotation><xsd:documentation>GS01 | Functional Identifier Code (PO=Purchase Order)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_142">
+        <xsd:annotation><xsd:documentation>GS02 | Application Sender's Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_124">
+        <xsd:annotation><xsd:documentation>GS03 | Application Receiver's Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373">
+        <xsd:annotation><xsd:documentation>GS04 | Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_337">
+        <xsd:annotation><xsd:documentation>GS05 | Time (HHMM or HHMMSS)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_28">
+        <xsd:annotation><xsd:documentation>GS06 | Group Control Number (must match GE02)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_455">
+        <xsd:annotation><xsd:documentation>GS07 | Responsible Agency Code (X=ASC X12)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_480">
+        <xsd:annotation><xsd:documentation>GS08 | Version/Release/Industry Identifier Code (004010)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="12"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  GE - Functional Group Trailer                                -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_GE">
+    <xsd:sequence>
+      <xsd:element name="D_97">
+        <xsd:annotation><xsd:documentation>GE01 | Number of Transaction Sets Included</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="6"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_28">
+        <xsd:annotation><xsd:documentation>GE02 | Group Control Number (must match GS06)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  M_850 - Purchase Order Transaction Set                       -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="M_850">
+    <xsd:sequence>
+      <xsd:element name="S_ST"  type="S_ST"/>
+      <xsd:element name="S_BEG" type="S_BEG"/>
+      <xsd:element name="S_NTE" type="S_NTE"  minOccurs="0" maxOccurs="100"/>
+      <xsd:element name="S_CUR" type="S_CUR"  minOccurs="0"/>
+      <xsd:element name="S_REF" type="S_REF"  minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_PER" type="S_PER"  minOccurs="0" maxOccurs="3"/>
+      <xsd:element name="S_TAX" type="S_TAX"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_FOB" type="S_FOB"  minOccurs="0"/>
+      <xsd:element name="S_CTP" type="S_CTP"  minOccurs="0"/>
+      <xsd:element name="S_PAM" type="S_PAM"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_CSH" type="S_CSH"  minOccurs="0"/>
+      <xsd:element name="S_ITD" type="S_ITD"  minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="S_DIS" type="S_DIS"  minOccurs="0" maxOccurs="20"/>
+      <xsd:element name="S_INC" type="S_INC"  minOccurs="0"/>
+      <xsd:element name="S_DTM" type="S_DTM"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_LDT" type="S_LDT"  minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_LIN" type="S_LIN"  minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="S_PID" type="S_PID"  minOccurs="0" maxOccurs="200"/>
+      <xsd:element name="S_MEA" type="S_MEA"  minOccurs="0" maxOccurs="40"/>
+      <xsd:element name="S_PWK" type="S_PWK"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_PKG" type="S_PKG"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_TD1" type="S_TD1"  minOccurs="0"/>
+      <xsd:element name="S_TD5" type="S_TD5"  minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_TD3" type="S_TD3"  minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_TD4" type="S_TD4"  minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="S_MAN" type="S_MAN"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_PCT" type="S_PCT"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_BAL" type="S_BAL"  minOccurs="0" maxOccurs="20"/>
+      <xsd:element name="S_YNQ" type="S_YNQ"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_AMT" type="S_AMT"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="L_N9"  type="L_N9"   minOccurs="0" maxOccurs="1000"/>
+      <xsd:element name="L_N1"  type="L_N1"   minOccurs="0" maxOccurs="200"/>
+      <xsd:element name="L_PO1" type="L_PO1"  minOccurs="0" maxOccurs="100000"/>
+      <xsd:element name="S_CTT" type="S_CTT"/>
+      <xsd:element name="S_AMT_sum" type="S_AMT" minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="S_SE"  type="S_SE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  ST - Transaction Set Header                                  -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_ST">
+    <xsd:sequence>
+      <xsd:element name="D_143">
+        <xsd:annotation><xsd:documentation>ST01 | Transaction Set Identifier Code = 850</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_329">
+        <xsd:annotation><xsd:documentation>ST02 | Transaction Set Control Number (must match SE02)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  SE - Transaction Set Trailer                                 -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_SE">
+    <xsd:sequence>
+      <xsd:element name="D_96">
+        <xsd:annotation><xsd:documentation>SE01 | Number of Included Segments (including ST and SE)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_329">
+        <xsd:annotation><xsd:documentation>SE02 | Transaction Set Control Number (must match ST02)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  BEG - Beginning Segment for Purchase Order                   -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_BEG">
+    <xsd:sequence>
+      <xsd:element name="D_353">
+        <xsd:annotation><xsd:documentation>BEG01 | Transaction Set Purpose Code (00=Original, 05=Replace, 01=Cancel)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_92">
+        <xsd:annotation><xsd:documentation>BEG02 | Purchase Order Type Code (SA=Stand-alone, NE=New Order, RL=Release)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_324">
+        <xsd:annotation><xsd:documentation>BEG03 | Purchase Order Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="22"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_328" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG04 | Release Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373">
+        <xsd:annotation><xsd:documentation>BEG05 | Date (CCYYMMDD) - Purchase Order Date</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_327" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG06 | Contract Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_367" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG07 | Acknowledgment Type</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1019" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG08 | Invoice Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1166" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG09 | Contract Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1232" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG10 | Purchase Category</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_786" minOccurs="0">
+        <xsd:annotation><xsd:documentation>BEG11 | Security Level Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  NTE - Note / Special Instruction                             -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_NTE">
+    <xsd:sequence>
+      <xsd:element name="D_363" minOccurs="0">
+        <xsd:annotation><xsd:documentation>NTE01 | Note Reference Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352">
+        <xsd:annotation><xsd:documentation>NTE02 | Description (free-form text, up to 80 chars)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  CUR - Currency                                               -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_CUR">
+    <xsd:sequence>
+      <xsd:element name="D_98">
+        <xsd:annotation><xsd:documentation>CUR01 | Entity Identifier Code (BY=Buyer, SE=Seller)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_100">
+        <xsd:annotation><xsd:documentation>CUR02 | Currency Code (e.g. USD, EUR)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_280" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CUR03 | Exchange Rate</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_98_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CUR04 | Entity Identifier Code (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_100_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CUR05 | Currency Code (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  REF - Reference Identification                               -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_REF">
+    <xsd:sequence>
+      <xsd:element name="D_128">
+        <xsd:annotation><xsd:documentation>REF01 | Reference Identification Qualifier (DP=Dept Number, IA=Internal Vendor Number, CO=Customer Order Number)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_127" minOccurs="0">
+        <xsd:annotation><xsd:documentation>REF02 | Reference Identification</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>REF03 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  PER - Administrative Communications Contact                  -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_PER">
+    <xsd:sequence>
+      <xsd:element name="D_366">
+        <xsd:annotation><xsd:documentation>PER01 | Contact Function Code (BD=Buyer, SC=Shipping Contact, OC=Order Contact)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_93" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER02 | Name</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="60"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_365" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER03 | Communication Number Qualifier (TE=Telephone, EM=Email, FX=Fax)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_364" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER04 | Communication Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_365_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER05 | Communication Number Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_364_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER06 | Communication Number (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_365_3" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER07 | Communication Number Qualifier (3)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_364_3" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PER08 | Communication Number (3)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  TAX - Tax Reference                                          -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_TAX">
+    <xsd:sequence>
+      <xsd:element name="D_325">
+        <xsd:annotation><xsd:documentation>TAX01 | Tax Identification Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_309" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TAX02 | Location Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_310" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TAX03 | Location Identifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_441" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TAX12 | Tax Exempt Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  FOB - F.O.B. Related Instructions                            -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_FOB">
+    <xsd:sequence>
+      <xsd:element name="D_146">
+        <xsd:annotation><xsd:documentation>FOB01 | Shipment Method of Payment (PP=Prepaid, CC=Collect, DF=Defined by Buyer &amp; Seller)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_309" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB02 | Location Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB03 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_334" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB04 | Transportation Terms Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_335" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB05 | Transportation Terms Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_309_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB06 | Location Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_310" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB07 | Location Identifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>FOB08 | Description (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  CTP - Pricing Information                                    -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_CTP">
+    <xsd:sequence>
+      <xsd:element name="D_687" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTP01 | Class of Trade Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_236" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTP02 | Price Identifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_212" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTP03 | Unit Price</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="17"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_380" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTP04 | Quantity</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTP05 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  PAM - Period Amount                                          -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_PAM">
+    <xsd:sequence>
+      <xsd:element name="D_374" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM01 | Date/Time Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM02 | Date</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_337" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM03 | Time</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_522" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM04 | Amount Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_782" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM05 | Monetary Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="18"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM06 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_380" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PAM07 | Quantity</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  CSH - Sales Requirements                                     -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_CSH">
+    <xsd:sequence>
+      <xsd:element name="D_563" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CSH01 | Sales Requirement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1073" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CSH02 | Yes/No Condition or Response Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_107" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CSH03 | Payment Method Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_127" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CSH04 | Reference Identification</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1039" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CSH05 | Account Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="35"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  ITD - Terms of Sale / Deferred Terms of Sale                 -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_ITD">
+    <xsd:sequence>
+      <xsd:element name="D_336" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD01 | Terms Type Code (01=Basic, 14=Previously agreed upon)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_333" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD02 | Terms Basis Date Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_338" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD03 | Terms Discount Percent</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="6"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_370" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD04 | Terms Discount Due Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_351" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD05 | Terms Discount Days Due</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_446" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD06 | Terms Net Due Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_386" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD07 | Terms Net Days</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_362" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD08 | Terms Discount Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_388" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD09 | Terms Deferred Due Date</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_389" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD10 | Deferred Amount Due</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_342" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD11 | Percent of Invoice Payable</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="5"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD12 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_765" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD13 | Day of Month</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_107" minOccurs="0">
+        <xsd:annotation><xsd:documentation>ITD14 | Payment Method Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  DIS - Discount Detail                                        -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_DIS">
+    <xsd:sequence>
+      <xsd:element name="D_631">
+        <xsd:annotation><xsd:documentation>DIS01 | Discount Terms Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_559" minOccurs="0">
+        <xsd:annotation><xsd:documentation>DIS02 | Agency Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_338" minOccurs="0">
+        <xsd:annotation><xsd:documentation>DIS03 | Discount Percent</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="6"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_782" minOccurs="0">
+        <xsd:annotation><xsd:documentation>DIS04 | Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  INC - Installment Information                                -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_INC">
+    <xsd:sequence>
+      <xsd:element name="D_594">
+        <xsd:annotation><xsd:documentation>INC01 | Terms Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_395">
+        <xsd:annotation><xsd:documentation>INC02 | Number (total installments)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_596">
+        <xsd:annotation><xsd:documentation>INC03 | Installment Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_597" minOccurs="0">
+        <xsd:annotation><xsd:documentation>INC04 | Percent</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  DTM - Date/Time Reference                                    -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_DTM">
+    <xsd:sequence>
+      <xsd:element name="D_374">
+        <xsd:annotation><xsd:documentation>DTM01 | Date/Time Qualifier (002=Delivery Requested, 010=Requested Ship, 037=Ship No Later, 038=Ship No Earlier)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373" minOccurs="0">
+        <xsd:annotation><xsd:documentation>DTM02 | Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_337" minOccurs="0">
+        <xsd:annotation><xsd:documentation>DTM03 | Time (HHMM)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_623" minOccurs="0">
+        <xsd:annotation><xsd:documentation>DTM04 | Time Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  LDT - Lead Time                                              -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_LDT">
+    <xsd:sequence>
+      <xsd:element name="D_345">
+        <xsd:annotation><xsd:documentation>LDT01 | Lead Time Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_380">
+        <xsd:annotation><xsd:documentation>LDT02 | Quantity</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_344" minOccurs="0">
+        <xsd:annotation><xsd:documentation>LDT03 | Unit of Time Period or Interval</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373" minOccurs="0">
+        <xsd:annotation><xsd:documentation>LDT04 | Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  LIN - Item Identification (header level)                     -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_LIN">
+    <xsd:sequence>
+      <xsd:element name="D_350" minOccurs="0">
+        <xsd:annotation><xsd:documentation>LIN01 | Assigned Identification</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235">
+        <xsd:annotation><xsd:documentation>LIN02 | Product/Service ID Qualifier (UP=UPC, BP=Buyer's Part Number, VP=Vendor's Part Number)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234">
+        <xsd:annotation><xsd:documentation>LIN03 | Product/Service ID</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>LIN04 | Product/Service ID Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>LIN05 | Product/Service ID (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  PID - Product/Item Description                               -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_PID">
+    <xsd:sequence>
+      <xsd:element name="D_349">
+        <xsd:annotation><xsd:documentation>PID01 | Item Description Type (F=Free-form, S=Structured)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_750" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PID02 | Product/Process Characteristic Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_559" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PID03 | Agency Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_751" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PID04 | Product Description Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="12"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PID05 | Description (free-form, up to 80 chars)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_752" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PID06 | Surface/Layer/Position Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_822" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PID07 | Source Subqualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  MEA - Measurements                                           -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_MEA">
+    <xsd:sequence>
+      <xsd:element name="D_737">
+        <xsd:annotation><xsd:documentation>MEA01 | Measurement Reference Identification Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_738" minOccurs="0">
+        <xsd:annotation><xsd:documentation>MEA02 | Measurement Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_739" minOccurs="0">
+        <xsd:annotation><xsd:documentation>MEA03 | Measurement Value</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>MEA04 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  PWK - Paperwork                                              -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_PWK">
+    <xsd:sequence>
+      <xsd:element name="D_755">
+        <xsd:annotation><xsd:documentation>PWK01 | Report Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_756" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PWK02 | Report Transmission Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  PKG - Marking, Packaging, Loading                            -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_PKG">
+    <xsd:sequence>
+      <xsd:element name="D_349" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PKG01 | Item Description Type (F=Free-form, S=Structured)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_753" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PKG02 | Packaging Characteristic Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_559" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PKG03 | Agency Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_754" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PKG04 | Packaging Description Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="7"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PKG05 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  TD1 - Carrier Details (Quantity and Weight)                  -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_TD1">
+    <xsd:sequence>
+      <xsd:element name="D_103" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD101 | Packaging Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="5"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_80" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD102 | Lading Quantity</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="7"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_187" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD106 | Weight Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_81" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD107 | Weight</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD108 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  TD5 - Carrier Details (Routing Sequence/Transit Time)        -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_TD5">
+    <xsd:sequence>
+      <xsd:element name="D_133" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD501 | Routing Sequence Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_66" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD502 | Identification Code Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_67" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD503 | Identification Code (SCAC)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_91" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD504 | Transportation Method/Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_387" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD505 | Routing</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="35"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_140" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD506 | Standard Carrier Alpha Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="4"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD507 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  TD3 - Carrier Details (Equipment)                            -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_TD3">
+    <xsd:sequence>
+      <xsd:element name="D_40" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD301 | Equipment Description Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_206" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD302 | Equipment Initial</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="4"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_207" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD303 | Equipment Number</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  TD4 - Carrier Details (Special Handling/Hazardous Material)  -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_TD4">
+    <xsd:sequence>
+      <xsd:element name="D_152" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD401 | Special Handling Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_208" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD402 | Hazardous Material Code Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_209" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD403 | Hazardous Material Class Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="4"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>TD404 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  MAN - Marks and Numbers                                      -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_MAN">
+    <xsd:sequence>
+      <xsd:element name="D_88">
+        <xsd:annotation><xsd:documentation>MAN01 | Marks and Numbers Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_87">
+        <xsd:annotation><xsd:documentation>MAN02 | Marks and Numbers</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_88_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>MAN03 | Marks and Numbers Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_87_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>MAN04 | Marks and Numbers (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  PCT - Percent Amounts                                        -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_PCT">
+    <xsd:sequence>
+      <xsd:element name="D_971">
+        <xsd:annotation><xsd:documentation>PCT01 | Percent Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_954">
+        <xsd:annotation><xsd:documentation>PCT02 | Percent</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_971_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PCT03 | Percent Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_954_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PCT04 | Percent (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  BAL - Balance Detail                                         -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_BAL">
+    <xsd:sequence>
+      <xsd:element name="D_426">
+        <xsd:annotation><xsd:documentation>BAL01 | Balance Type Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_522">
+        <xsd:annotation><xsd:documentation>BAL02 | Amount Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_782">
+        <xsd:annotation><xsd:documentation>BAL03 | Monetary Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="18"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  YNQ - Yes/No Question                                        -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_YNQ">
+    <xsd:sequence>
+      <xsd:element name="D_1321" minOccurs="0">
+        <xsd:annotation><xsd:documentation>YNQ01 | Condition Indicator</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1073">
+        <xsd:annotation><xsd:documentation>YNQ02 | Yes/No Condition or Response Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>YNQ05 | Free-Form Message Text</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="264"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  AMT - Monetary Amount                                        -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_AMT">
+    <xsd:sequence>
+      <xsd:element name="D_522">
+        <xsd:annotation><xsd:documentation>AMT01 | Amount Qualifier Code (1=Total Invoice Amount, TT=Total Transaction Amount)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_782">
+        <xsd:annotation><xsd:documentation>AMT02 | Monetary Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="18"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_478" minOccurs="0">
+        <xsd:annotation><xsd:documentation>AMT03 | Credit/Debit Flag Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  L_N9 - Extended Reference Identification Loop                -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="L_N9">
+    <xsd:sequence>
+      <xsd:element name="S_N9" type="S_N9"/>
+      <xsd:element name="S_MSG" type="S_MSG" minOccurs="0" maxOccurs="1000"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- N9 - Extended Reference Identification -->
+  <xsd:complexType name="S_N9">
+    <xsd:sequence>
+      <xsd:element name="D_128">
+        <xsd:annotation><xsd:documentation>N901 | Reference Identification Qualifier (LI=Line Item Identifier, ZZ=Mutually Defined)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_127" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N902 | Reference Identification</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_369" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N903 | Free-Form Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="45"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N904 | Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_337" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N905 | Time</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_623" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N906 | Time Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- MSG - Message Text -->
+  <xsd:complexType name="S_MSG">
+    <xsd:sequence>
+      <xsd:element name="D_933">
+        <xsd:annotation><xsd:documentation>MSG01 | Free-Form Message Text (up to 264 chars)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="264"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_934" minOccurs="0">
+        <xsd:annotation><xsd:documentation>MSG02 | Printer Carriage Control Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  L_N1 - Name Loop                                             -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="L_N1">
+    <xsd:sequence>
+      <xsd:element name="S_N1"  type="S_N1"/>
+      <xsd:element name="S_N2"  type="S_N2"  minOccurs="0" maxOccurs="2"/>
+      <xsd:element name="S_N3"  type="S_N3"  minOccurs="0" maxOccurs="2"/>
+      <xsd:element name="S_N4"  type="S_N4"  minOccurs="0"/>
+      <xsd:element name="S_NX2" type="S_NX2" minOccurs="0"/>
+      <xsd:element name="S_REF" type="S_REF" minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_PER" type="S_PER" minOccurs="0" maxOccurs="3"/>
+      <xsd:element name="S_FOB" type="S_FOB" minOccurs="0"/>
+      <xsd:element name="S_TD1" type="S_TD1" minOccurs="0"/>
+      <xsd:element name="S_TD5" type="S_TD5" minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_TD3" type="S_TD3" minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_TD4" type="S_TD4" minOccurs="0" maxOccurs="5"/>
+      <xsd:element name="S_PKG" type="S_PKG" minOccurs="0" maxOccurs="25"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- N1 - Name -->
+  <xsd:complexType name="S_N1">
+    <xsd:sequence>
+      <xsd:element name="D_98">
+        <xsd:annotation><xsd:documentation>N101 | Entity Identifier Code (BT=Bill-To, BY=Buyer, ST=Ship-To, SE=Seller, SF=Ship-From, VN=Vendor)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_93" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N102 | Name</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="60"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_66" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N103 | Identification Code Qualifier (01=DUNS, 9=DUNS+4, 92=Mutually Defined)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_67" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N104 | Identification Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- N2 - Additional Name Information -->
+  <xsd:complexType name="S_N2">
+    <xsd:sequence>
+      <xsd:element name="D_93">
+        <xsd:annotation><xsd:documentation>N201 | Name</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="60"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_93_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N202 | Additional Name</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="60"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- N3 - Address Information -->
+  <xsd:complexType name="S_N3">
+    <xsd:sequence>
+      <xsd:element name="D_166">
+        <xsd:annotation><xsd:documentation>N301 | Address Information (Street Line 1)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="55"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_166_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N302 | Address Information (Street Line 2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="55"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- N4 - Geographic Location -->
+  <xsd:complexType name="S_N4">
+    <xsd:sequence>
+      <xsd:element name="D_19" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N401 | City Name</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="30"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_156" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N402 | State or Province Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_116" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N403 | Postal Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_26" minOccurs="0">
+        <xsd:annotation><xsd:documentation>N404 | Country Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- NX2 - Location ID Component -->
+  <xsd:complexType name="S_NX2">
+    <xsd:sequence>
+      <xsd:element name="D_166">
+        <xsd:annotation><xsd:documentation>NX201 | Location Identifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="55"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_309" minOccurs="0">
+        <xsd:annotation><xsd:documentation>NX202 | Location Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  L_PO1 - Baseline Item Data Loop                              -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="L_PO1">
+    <xsd:sequence>
+      <xsd:element name="S_PO1"  type="S_PO1"/>
+      <xsd:element name="S_CUR"  type="S_CUR"  minOccurs="0"/>
+      <xsd:element name="S_PO3"  type="S_PO3"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_CTP"  type="S_CTP"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_PAM"  type="S_PAM"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_MEA"  type="S_MEA"  minOccurs="0" maxOccurs="40"/>
+      <xsd:element name="L_PID"  type="L_PID"  minOccurs="0" maxOccurs="1000"/>
+      <xsd:element name="S_PWK"  type="S_PWK"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_PKG"  type="S_PKG"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_PO4"  type="S_PO4"  minOccurs="0"/>
+      <xsd:element name="S_REF"  type="S_REF"  minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_PER"  type="S_PER"  minOccurs="0" maxOccurs="3"/>
+      <xsd:element name="S_SAC"  type="S_SAC"  minOccurs="0" maxOccurs="25"/>
+      <xsd:element name="S_IT8"  type="S_IT8"  minOccurs="0"/>
+      <xsd:element name="S_CSH"  type="S_CSH"  minOccurs="0"/>
+      <xsd:element name="S_FOB"  type="S_FOB"  minOccurs="0"/>
+      <xsd:element name="S_DTM"  type="S_DTM"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="S_LDT"  type="S_LDT"  minOccurs="0" maxOccurs="12"/>
+      <xsd:element name="S_TAX"  type="S_TAX"  minOccurs="0" maxOccurs="10"/>
+      <xsd:element name="L_SCH"  type="L_SCH"  minOccurs="0" maxOccurs="200"/>
+      <xsd:element name="L_N9"   type="L_N9"   minOccurs="0" maxOccurs="1000"/>
+      <xsd:element name="L_N1"   type="L_N1"   minOccurs="0" maxOccurs="200"/>
+      <xsd:element name="L_SLN"  type="L_SLN"  minOccurs="0" maxOccurs="1000"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- PO1 - Baseline Item Data -->
+  <xsd:complexType name="S_PO1">
+    <xsd:sequence>
+      <xsd:element name="D_350" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO101 | Assigned Identification (Line Number)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_330">
+        <xsd:annotation><xsd:documentation>PO102 | Quantity Ordered</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355">
+        <xsd:annotation><xsd:documentation>PO103 | Unit or Basis for Measurement Code (EA=Each, CA=Case, LB=Pound)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_212" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO104 | Unit Price</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="17"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_639" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO105 | Basis of Unit Price Code (EA=Each, TE=Price per Each)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO106 | Product/Service ID Qualifier (UP=UPC, CB=Buyer's Part Number, VP=Vendor's Part Number, BP=Buyer's Part Number)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO107 | Product/Service ID</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO108 | Product/Service ID Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO109 | Product/Service ID (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235_3" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO110 | Product/Service ID Qualifier (3)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234_3" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO111 | Product/Service ID (3)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235_4" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO112 | Product/Service ID Qualifier (4)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234_4" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO113 | Product/Service ID (4)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- PO3 - Additional Item Detail -->
+  <xsd:complexType name="S_PO3">
+    <xsd:sequence>
+      <xsd:element name="D_350">
+        <xsd:annotation><xsd:documentation>PO301 | Change Reason Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355">
+        <xsd:annotation><xsd:documentation>PO302 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_212" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO303 | Unit Price</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="17"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO304 | Date (CCYYMMDD)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- L_PID - Product/Item Description Loop -->
+  <xsd:complexType name="L_PID">
+    <xsd:sequence>
+      <xsd:element name="S_PID" type="S_PID"/>
+      <xsd:element name="S_MEA" type="S_MEA" minOccurs="0" maxOccurs="10"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- PO4 - Item Physical Details -->
+  <xsd:complexType name="S_PO4">
+    <xsd:sequence>
+      <xsd:element name="D_356" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO401 | Pack (number of inner packs per outer pack)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="6"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_357" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO402 | Size</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO403 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_103" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO404 | Packaging Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="5"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_187" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO405 | Weight Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_384" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO406 | Unit Weight</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO407 | Unit or Basis for Measurement Code (weight UOM)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_385" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO408 | Volume</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355_3" minOccurs="0">
+        <xsd:annotation><xsd:documentation>PO409 | Unit or Basis for Measurement Code (volume UOM)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- SAC - Service, Promotion, Allowance or Charge -->
+  <xsd:complexType name="S_SAC">
+    <xsd:sequence>
+      <xsd:element name="D_248">
+        <xsd:annotation><xsd:documentation>SAC01 | Allowance or Charge Indicator (A=Allowance, C=Charge)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1300" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC02 | Service, Promotion, Allowance or Charge Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="4"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_559" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC03 | Agency Qualifier Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1301" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC04 | Agency Service, Promotion, Allowance or Charge Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_782" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC05 | Amount</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_954" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC06 | Allowance/Charge Percent Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_118" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC07 | Rate</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="9"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC08 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_380" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC09 | Quantity</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SAC15 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- IT8 - Conditions of Sale -->
+  <xsd:complexType name="S_IT8">
+    <xsd:sequence>
+      <xsd:element name="D_563" minOccurs="0">
+        <xsd:annotation><xsd:documentation>IT801 | Sales Requirement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_1073" minOccurs="0">
+        <xsd:annotation><xsd:documentation>IT802 | Yes/No Condition or Response Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- L_SCH - Line Item Schedule Loop -->
+  <xsd:complexType name="L_SCH">
+    <xsd:sequence>
+      <xsd:element name="S_SCH" type="S_SCH"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- SCH - Line Item Schedule -->
+  <xsd:complexType name="S_SCH">
+    <xsd:sequence>
+      <xsd:element name="D_380">
+        <xsd:annotation><xsd:documentation>SCH01 | Quantity (scheduled quantity, must match PO102 or sum to PO102)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355">
+        <xsd:annotation><xsd:documentation>SCH02 | Unit or Basis for Measurement Code (must match PO103)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_374" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SCH03 | Date/Time Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SCH04 | Date (CCYYMMDD) - Requested Delivery Date</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_337" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SCH05 | Time</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_374_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SCH06 | Date/Time Qualifier (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="3"/><xsd:maxLength value="3"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_373_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SCH07 | Date (CCYYMMDD) - Cancel After Date</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="8"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_337_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SCH08 | Time (2)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="4"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- L_SLN - Subline Item Detail Loop -->
+  <xsd:complexType name="L_SLN">
+    <xsd:sequence>
+      <xsd:element name="S_SLN" type="S_SLN"/>
+      <xsd:element name="S_PID" type="S_PID" minOccurs="0" maxOccurs="200"/>
+      <xsd:element name="S_REF" type="S_REF" minOccurs="0" maxOccurs="12"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- SLN - Subline Item Detail -->
+  <xsd:complexType name="S_SLN">
+    <xsd:sequence>
+      <xsd:element name="D_350">
+        <xsd:annotation><xsd:documentation>SLN01 | Assigned Identification (Subline number)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_350_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN02 | Assigned Identification (Reference to SLN01)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="20"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_662">
+        <xsd:annotation><xsd:documentation>SLN03 | Relationship Code (I=Included, O=Excluded)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="1"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_380" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN04 | Quantity</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="15"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN05 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_212" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN06 | Unit Price</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="17"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_639" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN07 | Basis of Unit Price Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_235" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN08 | Product/Service ID Qualifier</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_234" minOccurs="0">
+        <xsd:annotation><xsd:documentation>SLN09 | Product/Service ID</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="48"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- ============================================================ -->
+  <!--  CTT - Transaction Totals                                     -->
+  <!-- ============================================================ -->
+  <xsd:complexType name="S_CTT">
+    <xsd:sequence>
+      <xsd:element name="D_354">
+        <xsd:annotation><xsd:documentation>CTT01 | Number of Line Items</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="6"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_347" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTT02 | Hash Total (sum of PO102 quantities)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_81" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTT03 | Weight</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="10"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTT04 | Unit or Basis for Measurement Code</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_183" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTT05 | Volume</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="8"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_355_2" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTT06 | Unit or Basis for Measurement Code (volume)</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="2"/><xsd:maxLength value="2"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="D_352" minOccurs="0">
+        <xsd:annotation><xsd:documentation>CTT07 | Description</xsd:documentation></xsd:annotation>
+        <xsd:simpleType><xsd:restriction base="xsd:string"><xsd:minLength value="1"/><xsd:maxLength value="80"/></xsd:restriction></xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>
